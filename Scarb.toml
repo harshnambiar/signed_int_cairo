@@ -1,0 +1,9 @@
+[package]
+name = "signed_int_cairo"
+version = "0.1.0"
+
+
+[dependencies]
+starknet = ">=2.2.0"
+
+
