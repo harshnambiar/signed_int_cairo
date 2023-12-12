@@ -14,6 +14,9 @@ trait SignedTrait {
 	fn multiplySigned(s1: Signed, s2: Signed) -> Signed;
 	fn divideSigned(s1: Signed, s2: Signed) -> Signed;
 	fn compareSigned(s1: Signed, s2: Signed) -> u32;
+	fn powerSigned(s: Signed, k: u32) -> Signed;
+	fn leftShiftSigned(s: Signed, n: u32) -> Signed;
+	fn rightShiftSigned(s: Signed, n: u32) -> Signed;
 }
 
 
@@ -158,6 +161,87 @@ impl SignedImpl of SignedTrait {
 		
 	}
 
+	fn powerSigned(s: Signed, k: u32) -> Signed {
+		assert (k > 0, 'exponent needs to be positive');
+		let mut val = 1;
+		let mut i = 1;
+		loop {
+			if i == (k+1) {
+				break;
+			}
+			val = val * s.value;
+			i += 1;
+		};
+		
+		let sn = Signed {
+			sign: ((k % 2 == 0) || (s.sign)),
+			value: val,
+		};
+		return sn;
+	}
+
+	fn leftShiftSigned(s: Signed, n: u32) -> Signed {
+		let mut pow = 1;
+		let mut i = 0;
+		loop {
+			if i >= n {
+				break;
+			}
+			pow = pow * 2;
+			i += 1;
+		};
+		if n == 0 {
+			return s;
+		}
+		else {
+			let sn = Signed {
+				sign: s.sign,
+				value: s.value * pow,
+			};
+			return sn;
+		}
+		
+	}
+
+	fn rightShiftSigned(s: Signed, n: u32) -> Signed {
+		let mut pow = 1;
+		let mut i = 0;
+		loop {
+			if i >= n {
+				break;
+			}
+			pow = pow * 2;
+			i += 1;
+		};
+		let mut val_final = s.value/pow;
+		let mut rem = 0;
+		if val_final * pow != s.value {
+			rem = 1;
+		}
+		 if s.sign {
+			if (rem == 1) && (val_final != 0){
+				val_final -= 0;
+			}
+		}
+		else {
+			if (rem == 1) {
+				val_final += 1;
+			}
+		}
+
+		if n == 0 {
+			return s;
+		}
+		else {
+			let sn = Signed {
+				sign: s.sign,
+				value: val_final,
+			};
+			return sn;
+		}
+		
+	}
+
 
 }
 
@@ -274,6 +358,64 @@ mod tests{
 		let s2 = SignedTrait::toSigned(false, 0);
 		let cmp = SignedTrait::compareSigned(s1, s2);
 		assert (cmp == 0, 'comparison test failed');
+	}
+
+	#[test]
+	#[available_gas(1000000)]
+	fn test_power1(){
+		let s= SignedTrait::toSigned(false, 2);
+		let spow = SignedTrait::powerSigned(s, 2);
+		assert (spow.value == 4, 'power test failed value');
+		assert (spow.sign != s.sign, 'power test failed sign');
+	}
+
+	#[test]
+	#[available_gas(1000000)]
+	fn test_power2(){
+		let s= SignedTrait::toSigned(true, 3);
+		let spow = SignedTrait::powerSigned(s, 3);
+		assert (spow.value == 27, 'power test failed value');
+		assert (spow.sign == s.sign, 'power test failed sign');
+	}
+
+	#[test]
+	#[available_gas(1000000)]
+	fn test_lshift_signed1(){
+		let s1 = SignedTrait::toSigned(true, 6);
+		
+		let s = SignedTrait::leftShiftSigned(s1, 2);
+		assert (s.value == 24, 'left shift test failed');
+		
+	}
+
+	#[test]
+	#[available_gas(1000000)]
+	fn test_lshift_signed2(){
+		let s1 = SignedTrait::toSigned(false, 6);
+		
+		let s = SignedTrait::leftShiftSigned(s1, 2);
+		assert (s.value == 24, 'left shift test failed value');
+		assert (!s.sign, 'left shift test failed sign');
+	}
+
+	#[test]
+	#[available_gas(1000000)]
+	fn test_rshift_signed1(){
+		let s1 = SignedTrait::toSigned(true, 21);
+		
+		let s = SignedTrait::rightShiftSigned(s1, 2);
+		assert (s.value == 5, 'right shift test failed');
+		
+	}
+
+	#[test]
+	#[available_gas(1000000)]
+	fn test_rshift_signed2(){
+		let s1 = SignedTrait::toSigned(false, 23);
+		
+		let s = SignedTrait::rightShiftSigned(s1, 3);
+		assert (s.value == 3, 'right shift test failed value');
+		assert (!s.sign, 'right shift test failed sign');
 	}
 
 }
