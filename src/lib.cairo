@@ -21,6 +21,7 @@ trait SignedTrait {
 
 
 impl SignedImpl of SignedTrait {
+	// creates a signed integer with said sign and value
 	fn toSigned(s: bool, v: u32) -> Signed {
 		let sn = Signed {
 			sign: s,
@@ -29,14 +30,17 @@ impl SignedImpl of SignedTrait {
 		return sn;
 	}
 
+	// fetches the value of the signed integer
 	fn valueSigned(s: Signed) -> u32 {
 		s.value
 	}
 
+	// fetches the sign of the signed integer, with true being positive and false being negative values
 	fn signSigned(s: Signed) -> bool {
 		s.sign
 	}
 
+	// returns a signed integer with the same value but opposite sign
 	fn reverseSigned(s: Signed) -> Signed {
 		let sn = Signed {
 			sign: !s.sign,
@@ -45,6 +49,7 @@ impl SignedImpl of SignedTrait {
 		return sn;
 	}
 
+	// returns the sum of two signed integers
 	fn addSigned(s1: Signed, s2: Signed) -> Signed {
 		if s1.sign == s2.sign {
 			let sn = Signed {
@@ -71,6 +76,8 @@ impl SignedImpl of SignedTrait {
 		}
 	}
 
+
+	// returns the latter signed integer subtracted from the former
 	fn subtractSigned(s1: Signed, s2: Signed) -> Signed {
 		if s1.sign != s2.sign {
 			let sn = Signed {
@@ -97,6 +104,8 @@ impl SignedImpl of SignedTrait {
 		}
 	}
 
+
+	// returns the product of two signed integers
 	fn multiplySigned(s1: Signed, s2: Signed) -> Signed {
 		let sn = Signed {
 			sign: (s1.sign == s2.sign),
@@ -105,7 +114,7 @@ impl SignedImpl of SignedTrait {
 		return sn;
 	}
 
-
+	// returns the quotient when the former signed integer is divided by the latter
 	fn divideSigned(s1: Signed, s2: Signed) -> Signed {
 		assert (s2.value != 0, 'denominator cant be 0');
 		let sn = Signed {
@@ -161,6 +170,8 @@ impl SignedImpl of SignedTrait {
 		
 	}
 
+
+	// returns a signed integer raised to a power
 	fn powerSigned(s: Signed, k: u32) -> Signed {
 		assert (k > 0, 'exponent needs to be positive');
 		let mut val = 1;
@@ -180,6 +191,8 @@ impl SignedImpl of SignedTrait {
 		return sn;
 	}
 
+
+	// returns the signed integer shifted to the left by n bits
 	fn leftShiftSigned(s: Signed, n: u32) -> Signed {
 		let mut pow = 1;
 		let mut i = 0;
@@ -203,6 +216,8 @@ impl SignedImpl of SignedTrait {
 		
 	}
 
+
+	// returns a signed integer shifted to the right by n bits
 	fn rightShiftSigned(s: Signed, n: u32) -> Signed {
 		let mut pow = 1;
 		let mut i = 0;
